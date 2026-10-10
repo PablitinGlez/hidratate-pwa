@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0284c7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Hidrátate - Aplicación PWA para registro diario de agua y recordatorios de hidratación.">
+    <title>Hidrátate - Control de Agua & Salud</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="./manifest.json">
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="./img/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="./img/icons/icon-192x192.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" fill="url(#drop-gradient)"/>
+                        <defs>
+                            <linearGradient id="drop-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#38bdf8" />
+                                <stop offset="100%" stop-color="#0284c7" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">Hidrátate</h1>
+                    <p class="brand-subtitle" id="current-date">Hoy</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="notif-toggle-btn" class="icon-btn" title="Activar Notificaciones" aria-label="Notificaciones">
+                    <svg id="bell-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    <span id="notif-badge" class="badge-dot hidden"></span>
+                </button>
+                <button id="settings-btn" class="icon-btn" title="Configurar Meta" aria-label="Configuración">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Water Gauge Visual -->
+        <main class="main-content">
+            <section class="gauge-section">
+                <div class="water-container" id="water-container">
+                    <div class="water-wave" id="water-wave">
+                        <div class="wave wave1"></div>
+                        <div class="wave wave2"></div>
+                    </div>
+                    <div class="gauge-overlay">
+                        <span class="percentage" id="percentage-txt">0%</span>
+                        <div class="intake-display">
+                            <span class="current-amount" id="current-amount">0</span>
+                            <span class="unit">/ <span id="goal-display">2000</span> ml</span>
+                        </div>
+                        <span class="status-msg" id="status-msg">¡Empieza a hidratarte! 💧</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Metrics -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-icon">🔥</span>
+                    <div>
+                        <p class="stat-label">Racha</p>
+                        <p class="stat-value" id="streak-val">1 día</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🎯</span>
+                    <div>
+                        <p class="stat-label">Restante</p>
+                        <p class="stat-value" id="remaining-val">2000 ml</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-icon">🥤</span>
+                    <div>
+                        <p class="stat-label">Vasos</p>
+                        <p class="stat-value" id="glasses-val">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Log Buttons -->
+            <section class="actions-section">
+                <h2 class="section-title">Registro Rápido</h2>
+                <div class="buttons-grid">
+                    <button class="add-water-btn" data-amount="250">
+                        <span class="btn-icon">🥛</span>
+                        <span class="btn-amount">+250 ml</span>
+                        <span class="btn-desc">1 Vaso</span>
+                    </button>
+                    <button class="add-water-btn" data-amount="500">
+                        <span class="btn-icon">🍶</span>
+                        <span class="btn-amount">+500 ml</span>
+                        <span class="btn-desc">1 Botella</span>
+                    </button>
+                    <button class="add-water-btn" data-amount="750">
+                        <span class="btn-icon">🧃</span>
+                        <span class="btn-amount">+750 ml</span>
+                        <span class="btn-desc">Termo</span>
+                    </button>
+                    <button class="add-water-btn" data-amount="1000">
+                        <span class="btn-icon">🫙</span>
+                        <span class="btn-amount">+1000 ml</span>
+                        <span class="btn-desc">1 Litro</span>
+                    </button>
+                </div>
+
+                <div class="custom-add-row">
+                    <input type="number" id="custom-amount-input" placeholder="Otra cantidad (ml)" min="50" max="3000" step="50">
+                    <button id="custom-add-btn" class="secondary-btn">Agregar</button>
+                    <button id="reset-day-btn" class="icon-danger-btn" title="Reiniciar día" aria-label="Reiniciar día">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="1 4 1 10 7 10"></polyline>
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Offline Banner Status -->
+            <div id="offline-banner" class="offline-banner hidden">
+                ⚡ Modo Offline activado - Tus registros se guardan localmente
+            </div>
+        </main>
+
+        <!-- Modal Settings -->
+        <div id="settings-modal" class="modal-backdrop hidden">
+            <div class="modal-card">
+                <div class="modal-header">
+                    <h3 class="modal-title">Configuración</h3>
+                    <button id="close-settings-btn" class="close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="goal-input">Meta Diaria (ml):</label>
+                        <input type="number" id="goal-input" min="500" max="5000" step="100" value="2000">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reminder-interval">Recordatorio de Notificación:</label>
+                        <select id="reminder-interval">
+                            <option value="0">Desactivado</option>
+                            <option value="15">Cada 15 minutos (Demo rápida)</option>
+                            <option value="30">Cada 30 minutos</option>
+                            <option value="60">Cada 1 hora</option>
+                            <option value="120">Cada 2 horas</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="test-notif-btn" class="action-btn-outline">
+                            🔔 Probar Notificación Ahora (3s)
+                        </button>
+                        <p class="helper-text">Dispara una notificación de prueba instantánea para verificar permisos.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="save-settings-btn" class="primary-btn">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast hidden"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/app.js"></script>
+</body>
+</html>
